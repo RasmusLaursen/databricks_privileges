@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from priviliges.service_requests.parser import Principal, ServiceRequest, ServiceRequestItem, ServiceRequestParser
+from privileges.service_requests.parser import Principal, ServiceRequest, ServiceRequestItem, ServiceRequestParser
 
 
 class TestServiceRequestParser:

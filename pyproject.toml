@@ -102,7 +102,6 @@ cov-abac = [
   "test-abac-cov", 
   "cov-report",
 ]
-demo = "python demo_abac_policies_crud.py"
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
@@ -186,7 +185,7 @@ unfixable = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["abac"]
+known-first-party = ["privileges"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
@@ -196,16 +195,16 @@ ban-relative-imports = "all"
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
 [tool.coverage.run]
-source_pkgs = ["abac", "tests"]
+source_pkgs = ["privileges", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/abac/__about__.py",
+  "src/privileges/__about__.py",
 ]
 
 [tool.coverage.paths]
-abac = ["src/abac", "*/abac/src/abac"]
-tests = ["tests", "*/abac/tests"]
+privileges = ["src/privileges", "*/privileges/src/privileges"]
+tests = ["tests", "*/privileges/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
