@@ -22,7 +22,7 @@ jobs:
     with:
       environment: ${{ inputs.environment }}  
       workspace-setup: ${{ inputs.workspace-setup }}
-      command: 'unit_test:run'
+      command: 'unit-test:run'
     secrets: inherit
 
   apply_privileges:
