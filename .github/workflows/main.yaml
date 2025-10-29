@@ -14,27 +14,9 @@ permissions:
   id-token: write
 
 jobs: 
-  apply-privileges:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: Install dependencies
-        run: |
-          pip install -e .
-      
-      - name: Apply privileges
-        env:
-          DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.enviroment].host }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
-          SERVICE_REQUEST_DIR: service_requests/priviliges
-        run: |
-          python -m abac.apply_priviliges
+  dev:
+    needs: test_validate
+    uses: ./.github/workflows/deploy_databricks.yml
+    with:
+      environment: 'dev'
+    secrets: inherit
