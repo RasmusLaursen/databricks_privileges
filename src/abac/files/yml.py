@@ -9,7 +9,7 @@ from typing import Any
 
 import yaml
 
-from src.abac.logger import logging_helper
+from abac.logger import logging_helper
 
 logger = logging_helper.get_logger(__name__)
 

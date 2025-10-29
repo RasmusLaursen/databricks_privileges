@@ -8,8 +8,8 @@ using the Databricks SDK based on resource types defined in the privileges modul
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.catalog import PermissionsChange, Privilege
 
-from src.abac.logger import logging_helper
-from src.abac.priviliges.priviliges import ObjectType, StandardPrivileges
+from abac.logger import logging_helper
+from abac.priviliges.priviliges import ObjectType, StandardPrivileges
 
 logger = logging_helper.get_logger(__name__)
 
