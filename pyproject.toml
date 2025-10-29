@@ -1,0 +1,225 @@
+###########################
+# build configuration
+###########################
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+###########################
+# project configuration
+###########################
+[project]
+name = "abac"
+dynamic = ["version"]
+description = "ABAC (Attribute-Based Access Control) Project"
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["abac", "access-control", "databricks", "unity-catalog", "policies"]
+authors = [
+  { name = "Rasmus Holm Laursen", email = "your.email@example.com" },
+]
+dependencies = [
+    "databricks-sdk>=0.70.0",
+    "pyyaml>=6.0.0",
+    "typing-extensions>=4.0.0; python_version<'3.10'",
+    "types-pyyaml>=6.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "coverage>=7.0.0",
+  "black>=23.0.0",
+  "ruff>=0.14.0",
+  "mypy>=1.18.0",
+]
+test = [
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "coverage>=7.0.0",
+]
+
+[project.urls]
+Documentation = "https://github.com/username/abac#readme"
+Issues = "https://github.com/username/abac/issues"
+Source = "https://github.com/username/abac"
+
+[project.scripts]
+apply_priviliges = "abac.apply_priviliges:main"
+apply_abac = "abac.apply_abac:main"
+
+###########################
+# tool configureation
+###########################
+[tool.hatch.version]
+path = "src/abac/__about__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/abac"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "tests/",
+    "docs/",
+    "service_requests/",
+    "README.md",
+    "LICENSE.txt",
+]
+exclude = [
+    "**/__pycache__/",
+    "**/*.pyc",
+    "**/*.pyo",
+]
+
+
+###########################
+# environment configuration
+###########################
+
+[tool.hatch.envs.default]
+dependencies = [
+  "coverage[toml]>=7.0.0",
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+]
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+test-abac = "pytest tests/test_abac_policies.py tests/test_abac_policies_integration.py -v"
+test-cov = "coverage run -m pytest {args:tests}"
+test-abac-cov = "coverage run -m pytest tests/test_abac_policies.py tests/test_abac_policies_integration.py"
+cov-report = [
+  "- coverage combine",
+  "coverage report",
+]
+cov = [
+  "test-cov",
+  "cov-report",
+]
+cov-abac = [
+  "test-abac-cov", 
+  "cov-report",
+]
+demo = "python demo_abac_policies_crud.py"
+
+[[tool.hatch.envs.all.matrix]]
+python = ["3.9", "3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.lint]
+dependencies = [
+  "black>=23.1.0",
+  "mypy>=1.18.0",
+  "ruff>=0.14.0",
+]
+[tool.hatch.envs.lint.scripts]
+typing = "mypy --install-types --non-interactive -p abac {args}"
+style = [
+  "ruff check {args:.}",
+  "black --check --diff {args:.}",
+]
+fmt = [
+  "black {args:.}",
+  "ruff check {args:.} --fix",
+  "style",
+]
+all = [
+  "style",
+  "typing",
+]
+
+[tool.black]
+target-version = ["py39"]
+line-length = 120
+skip-string-normalization = true
+
+[tool.ruff]
+target-version = "py39"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+  "A",
+  "ARG",
+  "B",
+  "C",
+  "DTZ",
+  "E",
+  "EM",
+  "F",
+  "FBT",
+  "I",
+  "ICN",
+  "ISC",
+  "N",
+  "PLC",
+  "PLE",
+  "PLR",
+  "PLW",
+  "Q",
+  "RUF",
+  "S",
+  "T",
+  "TID",
+  "UP",
+  "W",
+  "YTT",
+]
+ignore = [
+  # Allow non-abstract empty methods in abstract base classes
+  "B027",
+  # Allow boolean positional values in function calls, like `dict.get(... True)`
+  "FBT003",
+  # Ignore checks for possible passwords
+  "S105", "S106", "S107",
+  # Ignore complexity
+  "C901", "PLR0911", "PLR0912", "PLR0913", "PLR0915",
+  # ignore boolean
+  "FBT001","FBT002",
+  # ignore f-string
+  "EM102",
+]
+unfixable = [
+  # Don't touch unused imports
+  "F401",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["abac"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests can use magic values, assertions, and relative imports
+"tests/**/*" = ["PLR2004", "S101", "TID252"]
+
+[tool.coverage.run]
+source_pkgs = ["abac", "tests"]
+branch = true
+parallel = true
+omit = [
+  "src/abac/__about__.py",
+]
+
+[tool.coverage.paths]
+abac = ["src/abac", "*/abac/src/abac"]
+tests = ["tests", "*/abac/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.hatch.envs.apply_priviliges]
+
+[tool.hatch.envs.apply_priviliges.scripts]
+apply-privileges = "python -m abac.apply_priviliges"
+
+[tool.hatch.envs.apply_abac]
+
+[tool.hatch.envs.apply_abac.scripts]
+apply-abac = "python -m abac.apply_abac"
