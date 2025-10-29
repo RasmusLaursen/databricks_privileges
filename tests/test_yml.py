@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from abac.files import yml
+from privileges.files import yml
 
 
 class TestYMLReader:

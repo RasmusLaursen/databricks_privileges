@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from src.abac.abac.abac import (
+from privileges.abac.abac import (
     ABACPoliciesInterface,
     abac_policies,
     create_abac_policy,
@@ -24,7 +24,7 @@ class TestABACPoliciesIntegration:
 
     def test_complete_policy_lifecycle(self):
         """Test complete policy lifecycle: create, read, update, delete."""
-        with patch("src.abac.abac.abac.WorkspaceClient") as mock_ws:
+        with patch("privileges.abac.abac.WorkspaceClient") as mock_ws:
             # Setup mock workspace client
             mock_client = Mock()
             mock_ws.return_value = mock_client
@@ -88,7 +88,7 @@ class TestABACPoliciesIntegration:
 
             mock_client.policies.delete_policy.assert_called_once()
 
-    @patch("src.abac.abac.abac.abac_policies")
+    @patch("privileges.abac.abac.abac_policies")
     def test_convenience_functions_integration(self, mock_global_interface):
         """Test that convenience functions properly use the global interface."""
         # Mock the global interface responses
@@ -141,7 +141,7 @@ class TestABACPoliciesIntegration:
 
     def test_policy_validation_scenarios(self):
         """Test various policy validation scenarios."""
-        with patch("src.abac.abac.abac.WorkspaceClient") as mock_ws:
+        with patch("privileges.abac.abac.WorkspaceClient") as mock_ws:
             mock_client = Mock()
             mock_ws.return_value = mock_client
             interface = ABACPoliciesInterface(mock_client)
@@ -180,7 +180,7 @@ class TestABACPoliciesIntegration:
 
     def test_complex_policy_configurations(self):
         """Test creating policies with complex configurations."""
-        with patch("src.abac.abac.abac.WorkspaceClient") as mock_ws:
+        with patch("privileges.abac.abac.WorkspaceClient") as mock_ws:
             mock_client = Mock()
             mock_ws.return_value = mock_client
             mock_client.policies.create_policy.return_value = Mock()

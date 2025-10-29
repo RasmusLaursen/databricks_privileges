@@ -10,12 +10,12 @@ build-backend = "hatchling.build"
 # project configuration
 ###########################
 [project]
-name = "abac"
+name = "privileges"
 dynamic = ["version"]
-description = "ABAC (Attribute-Based Access Control) Project"
+description = "Privileges is a Python package to manage Databricks Unity Catalog privileges and ABAC (Attribute-Based Access Control) policies."
 readme = "README.md"
 requires-python = ">=3.9"
-keywords = ["abac", "access-control", "databricks", "unity-catalog", "policies"]
+keywords = ["privileges", "abac", "access-control", "databricks", "unity-catalog", "policies"]
 authors = [
   { name = "Rasmus Holm Laursen", email = "your.email@example.com" },
 ]
@@ -42,22 +42,22 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/username/abac#readme"
-Issues = "https://github.com/username/abac/issues"
-Source = "https://github.com/username/abac"
+Documentation = "https://github.com/username/privileges#readme"
+Issues = "https://github.com/username/privileges/issues"
+Source = "https://github.com/username/privileges"
 
 [project.scripts]
-apply_priviliges = "abac.apply_priviliges:main"
-apply_abac = "abac.apply_abac:main"
+apply_priviliges = "privileges.apply_priviliges:main"
+apply_abac = "privileges.apply_abac:main"
 
 ###########################
 # tool configureation
 ###########################
 [tool.hatch.version]
-path = "src/abac/__about__.py"
+path = "src/privileges/__about__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/abac"]
+packages = ["src/privileges"]
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -102,7 +102,21 @@ cov-abac = [
   "test-abac-cov", 
   "cov-report",
 ]
-demo = "python demo_abac_policies_crud.py"
+
+[tool.hatch.envs.unit-test]
+dependencies = [
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "coverage[toml]>=7.0.0",
+]
+[tool.hatch.envs.unit-test.scripts]
+run = "pytest {args:tests}"
+run-verbose = "pytest -v {args:tests}"
+run-abac = "pytest tests/test_abac_policies.py tests/test_abac_policies_integration.py -v"
+run-parser = "pytest tests/test_service_request_parser.py -v"
+run-yml = "pytest tests/test_yml.py -v"
+coverage = "pytest --cov=privileges --cov-report=term-missing {args:tests}"
+coverage-html = "pytest --cov=privileges --cov-report=html {args:tests}"
 
 [[tool.hatch.envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
@@ -114,7 +128,7 @@ dependencies = [
   "ruff>=0.14.0",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive -p abac {args}"
+typing = "mypy --install-types --non-interactive -p privileges {args}"
 style = [
   "ruff check {args:.}",
   "black --check --diff {args:.}",
@@ -186,7 +200,7 @@ unfixable = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["abac"]
+known-first-party = ["privileges"]
 
 [tool.ruff.lint.flake8-tidy-imports]
 ban-relative-imports = "all"
@@ -196,16 +210,16 @@ ban-relative-imports = "all"
 "tests/**/*" = ["PLR2004", "S101", "TID252"]
 
 [tool.coverage.run]
-source_pkgs = ["abac", "tests"]
+source_pkgs = ["privileges", "tests"]
 branch = true
 parallel = true
 omit = [
-  "src/abac/__about__.py",
+  "src/privileges/__about__.py",
 ]
 
 [tool.coverage.paths]
-abac = ["src/abac", "*/abac/src/abac"]
-tests = ["tests", "*/abac/tests"]
+privileges = ["src/privileges", "*/privileges/src/privileges"]
+tests = ["tests", "*/privileges/tests"]
 
 [tool.coverage.report]
 exclude_lines = [
@@ -214,12 +228,12 @@ exclude_lines = [
   "if TYPE_CHECKING:",
 ]
 
-[tool.hatch.envs.apply_priviliges]
+[tool.hatch.envs.apply_privileges]
 
-[tool.hatch.envs.apply_priviliges.scripts]
-apply-privileges = "python -m abac.apply_priviliges"
+[tool.hatch.envs.apply_privileges.scripts]
+run = "python -m privileges.apply_priviliges"
 
 [tool.hatch.envs.apply_abac]
 
 [tool.hatch.envs.apply_abac.scripts]
-apply-abac = "python -m abac.apply_abac"
+run = "python -m privileges.apply_abac"

@@ -3,7 +3,7 @@ name: hatch run with databricks configured
 on:
   workflow_call:
     inputs:
-      enviroment:
+      environment:
         description: 'The environment to deploy to (e.g., dev, prod)'
         required: true
         type: string
@@ -17,27 +17,19 @@ permissions:
   id-token: write
 
 jobs: 
+  test-apply_privileges:
+    uses: ./.github/workflows/hatch.yaml
+    with:
+      environment: ${{ inputs.environment }}  
+      workspace-setup: ${{ inputs.workspace-setup }}
+      command: 'unit-test:run'
+    secrets: inherit
+
   apply_privileges:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      
-      - name: Install dependencies
-        run: |
-          pip install -e .
-      
-      - name: Apply privileges
-        env:
-          DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.enviroment].host }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
-          SERVICE_REQUEST_DIR: service_requests/priviliges
-        run: |
-          python -m abac.apply_priviliges
+    needs: test-apply_privileges
+    uses: ./.github/workflows/hatch.yaml
+    with:
+      environment: ${{ inputs.environment }}
+      workspace-setup: ${{ inputs.workspace-setup }}
+      command: 'apply_privileges:run'
+    secrets: inherit

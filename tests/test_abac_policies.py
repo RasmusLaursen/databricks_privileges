@@ -19,7 +19,7 @@ from databricks.sdk.service.catalog import (
 )
 
 # Import the classes and functions we're testing
-from src.abac.abac.abac import (
+from privileges.abac.abac import (
     ABACPoliciesInterface,
     get_catalog_policies,
     get_schema_policies,
@@ -312,7 +312,7 @@ class TestABACPoliciesInterface:
 class TestConvenienceFunctions:
     """Test the convenience functions that use the global interface."""
 
-    @patch("src.abac.abac.abac.abac_policies")
+    @patch("privileges.abac.abac.abac_policies")
     def test_list_abac_policies(self, mock_global_interface):
         """Test list_abac_policies convenience function."""
         mock_policies = [Mock(name="policy1"), Mock(name="policy2")]
@@ -327,7 +327,7 @@ class TestConvenienceFunctions:
         )
         assert result == mock_policies
 
-    @patch("src.abac.abac.abac.abac_policies")
+    @patch("privileges.abac.abac.abac_policies")
     def test_list_abac_policies_no_object(self, mock_global_interface):
         """Test list_abac_policies with securable_object."""
         mock_policies = [Mock(name="policy1")]
@@ -339,7 +339,7 @@ class TestConvenienceFunctions:
             securable_type="catalog", securable_fullname="catalog_name", include_inherited=False
         )
 
-    @patch("src.abac.abac.abac.abac_policies")
+    @patch("privileges.abac.abac.abac_policies")
     def test_create_abac_policy(self, mock_global_interface):
         """Test create_abac_policy convenience function."""
         # This function doesn't exist yet, let's add it to the interface
@@ -347,7 +347,7 @@ class TestConvenienceFunctions:
 
     def test_get_table_policies(self):
         """Test get_table_policies convenience function."""
-        with patch("src.abac.abac.abac.list_abac_policies") as mock_list:
+        with patch("privileges.abac.abac.list_abac_policies") as mock_list:
             mock_policies = [Mock(name="policy1")]
             mock_list.return_value = mock_policies
 
@@ -360,7 +360,7 @@ class TestConvenienceFunctions:
 
     def test_get_schema_policies(self):
         """Test get_schema_policies convenience function."""
-        with patch("src.abac.abac.abac.list_abac_policies") as mock_list:
+        with patch("privileges.abac.abac.list_abac_policies") as mock_list:
             mock_policies = [Mock(name="policy1")]
             mock_list.return_value = mock_policies
 
@@ -373,7 +373,7 @@ class TestConvenienceFunctions:
 
     def test_get_catalog_policies(self):
         """Test get_catalog_policies convenience function."""
-        with patch("src.abac.abac.abac.list_abac_policies") as mock_list:
+        with patch("privileges.abac.abac.list_abac_policies") as mock_list:
             mock_policies = [Mock(name="policy1")]
             mock_list.return_value = mock_policies
 

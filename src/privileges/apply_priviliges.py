@@ -5,11 +5,11 @@ This module provides functionality for implementing attribute-based access contr
 in your applications.
 """
 
-from src.abac.grants.grants import create_grant_manager
-from src.abac.logger import logging_helper
-from src.abac.priviliges.priviliges import ObjectType, StandardPrivileges
-from src.abac.service_requests.parser import ServiceRequestParser
-from src.abac.workspace import workspace
+from privileges.grants.grants import create_grant_manager
+from privileges.logger import logging_helper
+from privileges.privileges.privileges import ObjectType, StandardPrivileges
+from privileges.service_requests.parser import ServiceRequestParser
+from privileges.workspace import workspace
 
 from typing import Optional
 import os
@@ -205,7 +205,8 @@ def get_env_variable(var_name: str, default: Optional[str] = None, required: boo
         raise ValueError(error_msg)
     return value
 
-if __name__ == "__main__":
+def main():
+    """Main entry point for the apply_priviliges command."""
     # When run as a script, initialize the workspace and list groups
     try:
         host = get_env_variable('DATABRICKS_HOST')
@@ -225,3 +226,7 @@ if __name__ == "__main__":
 
     except Exception as e:
         logger.error(f"Main execution error: {e}")
+
+
+if __name__ == "__main__":
+    main()

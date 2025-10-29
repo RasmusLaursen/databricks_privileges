@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Optional
 
-from src.abac.files import yml
-from src.abac.logger import logging_helper
+from privileges.files import yml
+from privileges.logger import logging_helper
 
 
 @dataclass
