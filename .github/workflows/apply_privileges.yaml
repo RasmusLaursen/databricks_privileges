@@ -34,10 +34,8 @@ jobs:
       
       - name: Apply privileges
         env:
-          DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.enviroment].host }}
+          DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.environment].host }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          ENVIRONMENT: ${{ github.event.inputs.environment }}
-          DRY_RUN: ${{ github.event.inputs.dry_run }}
-          SERVICE_REQUEST_DIR: service_requests/priviliges
+          ENVIRONMENT: ${{ inputs.enviroment }}
         run: |
           python -m abac.apply_priviliges
