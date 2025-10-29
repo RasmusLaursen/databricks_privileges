@@ -1,0 +1,21 @@
+name: Deploy Databrikcs solution
+on: 
+  push:
+    branches:
+      - main
+      - feature/**
+  
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs: 
+  apply-privileges:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
