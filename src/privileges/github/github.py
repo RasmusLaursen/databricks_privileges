@@ -42,23 +42,39 @@ class GitHubIntegration:
         Raises:
             subprocess.CalledProcessError: If git command fails
         """
-        try:
-            # Get files changed between base branch and current HEAD
-            result = subprocess.run(
-                ["git", "diff", "--name-only", f"{base_branch}...HEAD"],
-                cwd=self.repo_root,
-                capture_output=True,
-                text=True,
-                check=True
-            )
-            
-            changed_files = [line.strip() for line in result.stdout.splitlines() if line.strip()]
-            return changed_files
-            
-        except subprocess.CalledProcessError as e:
-            logger.error(f"Failed to get changed files: {e}")
-            logger.error(f"Git error output: {e.stderr}")
-            raise
+        # Try different branch references in order of preference
+        branch_refs = [
+            f"origin/{base_branch}",  # Remote branch (most reliable)
+            base_branch,              # Local branch
+            f"upstream/{base_branch}" # Upstream branch (for forks)
+        ]
+        
+        for branch_ref in branch_refs:
+            try:
+                # Get files changed between base branch and current HEAD
+                result = subprocess.run(
+                    ["git", "diff", "--name-only", f"{branch_ref}...HEAD"],
+                    cwd=self.repo_root,
+                    capture_output=True,
+                    text=True,
+                    check=True
+                )
+                
+                changed_files = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+                logger.info(f"Successfully got changed files using {branch_ref}")
+                return changed_files
+                
+            except subprocess.CalledProcessError as e:
+                logger.debug(f"Failed to get changed files using {branch_ref}: {e}")
+                continue
+        
+        # If all attempts failed, raise the last error
+        logger.error(f"Failed to get changed files using any branch reference: {branch_refs}")
+        raise subprocess.CalledProcessError(
+            1, 
+            f"git diff --name-only", 
+            f"Could not find any valid branch reference from: {', '.join(branch_refs)}"
+        )
 
     def get_changed_files_from_env(self) -> List[str]:
         """

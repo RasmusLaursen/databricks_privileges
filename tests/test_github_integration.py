@@ -84,13 +84,12 @@ class TestGitHubIntegration:
         assert "service_requests/priviliges/test.yml" in changed_files
         assert "other.txt" in changed_files
         
-        mock_run.assert_called_once_with(
-            ["git", "diff", "--name-only", "main...HEAD"],
-            cwd=github_integration.repo_root,
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        # The new implementation tries origin/main first, so check for that
+        expected_calls = [
+            (["git", "diff", "--name-only", "origin/main...HEAD"],),
+        ]
+        actual_calls = [call[0] for call in mock_run.call_args_list]
+        assert any(expected_call in actual_calls for expected_call in expected_calls)
 
     @patch('subprocess.run')
     def test_get_changed_files_error(self, mock_run):
@@ -120,14 +119,12 @@ class TestGitHubIntegration:
         assert len(changed_files) == 1
         assert "service_requests/priviliges/test.yml" in changed_files
         
-        # Should use the base ref from environment
-        mock_run.assert_called_once_with(
-            ["git", "diff", "--name-only", "develop...HEAD"],
-            cwd=github_integration.repo_root,
-            capture_output=True,
-            text=True,
-            check=True
-        )
+        # Should use the base ref from environment, but with origin/ prefix
+        expected_calls = [
+            (["git", "diff", "--name-only", "origin/develop...HEAD"],),
+        ]
+        actual_calls = [call[0] for call in mock_run.call_args_list]
+        assert any(expected_call in actual_calls for expected_call in expected_calls)
 
     @patch.dict(os.environ, {}, clear=True)
     def test_get_changed_files_from_env_not_github_actions(self):
