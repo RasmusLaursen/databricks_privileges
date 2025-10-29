@@ -1,9 +1,9 @@
-name: Deploy Databrikcs solution
+name: Apply Databrikcs privileges
 on: 
   push:
     branches:
       - main
-      - feature/**
+      - feat/**
   
   pull_request:
     branches:
@@ -14,8 +14,8 @@ permissions:
   id-token: write
 
 jobs: 
-  apply-privileges:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+  apply_privileges:
+    uses: ./.github/workflows/apply_privileges.yml
+    with:
+      environment: 'dev'
+    secrets: inherit

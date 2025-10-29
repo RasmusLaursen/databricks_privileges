@@ -1,0 +1,17 @@
+request-name: Test Request
+request-type: access
+request-status: active # active, decomissioned
+
+requests: 
+  - principal:
+      type: group
+      id: lakehouse_analyst
+    resource: base_dev.dev_rahl_lakehouse
+    privileges:
+      - USE_SCHEMA
+  - principal:
+      type: group
+      id: lakehouse_analyst
+    resource: raw_dev.dev_rahl_lakehouse
+    privileges:
+      - USE_SCHEMA
