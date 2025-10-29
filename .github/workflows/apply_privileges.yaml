@@ -20,9 +20,9 @@ jobs:
   test-apply_privileges:
     uses: ./.github/workflows/hatch.yaml
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ inputs.environment }}  
       workspace-setup: ${{ inputs.workspace-setup }}
-      command: 'test_apply_privileges:run'
+      command: 'unit_test:run'
     secrets: inherit
 
   apply_privileges:

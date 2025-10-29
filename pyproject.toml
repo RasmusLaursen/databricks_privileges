@@ -103,6 +103,21 @@ cov-abac = [
   "cov-report",
 ]
 
+[tool.hatch.envs.unit-test]
+dependencies = [
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "coverage[toml]>=7.0.0",
+]
+[tool.hatch.envs.unit-test.scripts]
+run = "pytest {args:tests}"
+run-verbose = "pytest -v {args:tests}"
+run-abac = "pytest tests/test_abac_policies.py tests/test_abac_policies_integration.py -v"
+run-parser = "pytest tests/test_service_request_parser.py -v"
+run-yml = "pytest tests/test_yml.py -v"
+coverage = "pytest --cov=privileges --cov-report=term-missing {args:tests}"
+coverage-html = "pytest --cov=privileges --cov-report=html {args:tests}"
+
 [[tool.hatch.envs.all.matrix]]
 python = ["3.9", "3.10", "3.11", "3.12"]
 
