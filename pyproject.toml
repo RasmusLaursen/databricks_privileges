@@ -49,6 +49,7 @@ Source = "https://github.com/username/privileges"
 [project.scripts]
 apply_priviliges = "privileges.apply_priviliges:main"
 apply_abac = "privileges.apply_abac:main"
+validate_service_request = "privileges.validate_service_request:main"
 
 ###########################
 # tool configureation
@@ -237,3 +238,10 @@ run = "python -m privileges.apply_priviliges"
 
 [tool.hatch.envs.apply_abac.scripts]
 run = "python -m privileges.apply_abac"
+
+[tool.hatch.envs.validate_service_request]
+
+[tool.hatch.envs.validate_service_request.scripts]
+run = "python -m privileges.validate_service_request"
+verbose = "python -m privileges.validate_service_request --verbose"
+validate = "python -m privileges.validate_service_request"

@@ -25,8 +25,18 @@ jobs:
       command: 'unit-test:run'
     secrets: inherit
 
+  validate_service_request:
+    needs: test-apply_privileges
+    uses: ./.github/workflows/hatch.yaml
+    with:
+      environment: ${{ inputs.environment }}
+      workspace-setup: ${{ inputs.workspace-setup }}
+      command: 'validate_service_request:run'
+    secrets: inherit
+
   apply_privileges:
     needs: test-apply_privileges
+    if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/hatch.yaml
     with:
       environment: ${{ inputs.environment }}
