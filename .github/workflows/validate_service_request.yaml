@@ -17,10 +17,11 @@ permissions:
   id-token: write
 
 jobs: 
-  apply_privileges:
+  validate_service_request:
+    needs: test-apply_privileges
     uses: ./.github/workflows/hatch.yaml
     with:
       environment: ${{ inputs.environment }}
       workspace-setup: ${{ inputs.workspace-setup }}
-      command: 'apply_privileges:run'
+      command: 'validate_service_request:run'
     secrets: inherit
