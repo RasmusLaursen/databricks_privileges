@@ -20,8 +20,11 @@ jobs:
   apply_privileges:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: hatch run apply_privileges
-        uses: ./.github/workflows/hatch.yml
+        uses: ./.github/workflows/hatch.yaml
         with:
           environment: ${{ inputs.environment }}
           workspace-setup: ${{ inputs.workspace-setup }}
