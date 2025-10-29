@@ -143,6 +143,7 @@ class TestGitHubIntegration:
         github_integration = GitHubIntegration()
         assert github_integration.is_in_pull_request() is True
 
+    @patch.dict(os.environ, {}, clear=True)
     @patch('subprocess.run')
     def test_is_in_pull_request_git_branch(self, mock_run):
         """Test PR detection based on git branch."""
@@ -155,6 +156,7 @@ class TestGitHubIntegration:
         github_integration = GitHubIntegration()
         assert github_integration.is_in_pull_request() is True
 
+    @patch.dict(os.environ, {}, clear=True)
     @patch('subprocess.run')
     def test_is_not_in_pull_request_main_branch(self, mock_run):
         """Test PR detection when on main branch."""

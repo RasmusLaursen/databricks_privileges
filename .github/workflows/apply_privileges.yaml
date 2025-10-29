@@ -35,7 +35,7 @@ jobs:
     secrets: inherit
 
   apply_privileges:
-    needs: test-apply_privileges
+    needs: validate_service_request
     if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/hatch.yaml
     with:
