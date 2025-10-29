@@ -1,4 +1,4 @@
-name: Deploy Databrikcs solution
+name: Apply Databrikcs privileges
 on: 
   push:
     branches:
