@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from abac.abac.abac import (
+from priviliges.abac.abac import (
     ABACPoliciesInterface,
     abac_policies,
     create_abac_policy,

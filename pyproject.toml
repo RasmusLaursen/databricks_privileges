@@ -10,12 +10,12 @@ build-backend = "hatchling.build"
 # project configuration
 ###########################
 [project]
-name = "abac"
+name = "privileges"
 dynamic = ["version"]
-description = "ABAC (Attribute-Based Access Control) Project"
+description = "Privileges is a Python package to manage Databricks Unity Catalog privileges and ABAC (Attribute-Based Access Control) policies."
 readme = "README.md"
 requires-python = ">=3.9"
-keywords = ["abac", "access-control", "databricks", "unity-catalog", "policies"]
+keywords = ["privileges", "abac", "access-control", "databricks", "unity-catalog", "policies"]
 authors = [
   { name = "Rasmus Holm Laursen", email = "your.email@example.com" },
 ]
@@ -42,22 +42,22 @@ test = [
 ]
 
 [project.urls]
-Documentation = "https://github.com/username/abac#readme"
-Issues = "https://github.com/username/abac/issues"
-Source = "https://github.com/username/abac"
+Documentation = "https://github.com/username/privileges#readme"
+Issues = "https://github.com/username/privileges/issues"
+Source = "https://github.com/username/privileges"
 
 [project.scripts]
-apply_priviliges = "abac.apply_priviliges:main"
-apply_abac = "abac.apply_abac:main"
+apply_priviliges = "privileges.apply_priviliges:main"
+apply_abac = "privileges.apply_abac:main"
 
 ###########################
 # tool configureation
 ###########################
 [tool.hatch.version]
-path = "src/abac/__about__.py"
+path = "src/privileges/__about__.py"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/abac"]
+packages = ["src/privileges"]
 
 [tool.hatch.build.targets.sdist]
 include = [
@@ -114,7 +114,7 @@ dependencies = [
   "ruff>=0.14.0",
 ]
 [tool.hatch.envs.lint.scripts]
-typing = "mypy --install-types --non-interactive -p abac {args}"
+typing = "mypy --install-types --non-interactive -p privileges {args}"
 style = [
   "ruff check {args:.}",
   "black --check --diff {args:.}",
@@ -214,12 +214,12 @@ exclude_lines = [
   "if TYPE_CHECKING:",
 ]
 
-[tool.hatch.envs.apply_priviliges]
+[tool.hatch.envs.apply_privileges]
 
-[tool.hatch.envs.apply_priviliges.scripts]
-apply-privileges = "python -m abac.apply_priviliges"
+[tool.hatch.envs.apply_privileges.scripts]
+run = "python -m privileges.apply_priviliges"
 
 [tool.hatch.envs.apply_abac]
 
 [tool.hatch.envs.apply_abac.scripts]
-apply-abac = "python -m abac.apply_abac"
+run = "python -m privileges.apply_abac"

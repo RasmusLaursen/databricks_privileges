@@ -19,7 +19,7 @@ from databricks.sdk.service.catalog import (
 )
 
 # Import the classes and functions we're testing
-from abac.abac.abac import (
+from priviliges.abac.abac import (
     ABACPoliciesInterface,
     get_catalog_policies,
     get_schema_policies,

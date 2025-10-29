@@ -5,7 +5,7 @@ This module provides a comprehensive interface for managing Databricks Unity Cat
 ABAC (Attribute-Based Access Control) policies.
 """
 
-from abac.abac.abac import (
+from privileges.abac.abac import (
     ABACPoliciesInterface,
     abac_policies,
     create_abac_policy,

@@ -5,11 +5,11 @@ This module provides functionality for implementing attribute-based access contr
 in your applications.
 """
 
-from abac.grants.grants import create_grant_manager
-from abac.logger import logging_helper
-from abac.priviliges.priviliges import ObjectType, StandardPrivileges
-from abac.service_requests.parser import ServiceRequestParser
-from abac.workspace import workspace
+from privileges.grants.grants import create_grant_manager
+from privileges.logger import logging_helper
+from privileges.privileges.privileges import ObjectType, StandardPrivileges
+from privileges.service_requests.parser import ServiceRequestParser
+from privileges.workspace import workspace
 
 from typing import Optional
 import os

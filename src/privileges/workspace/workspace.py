@@ -1,6 +1,6 @@
 from databricks.sdk import WorkspaceClient
 
-from abac.logger import logging_helper
+from privileges.logger import logging_helper
 
 logger = logging_helper.get_logger(__name__)
 

@@ -20,22 +20,9 @@ jobs:
   apply_privileges:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: hatch run apply_privileges
+        uses: ./.github/workflows/hatch.yml
         with:
-          python-version: '3.12'
-      
-      - name: Install dependencies
-        run: |
-          pip install -e .
-      
-      - name: Apply privileges
-        env:
-          DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.environment].host }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-          ENVIRONMENT: ${{ inputs.enviroment }}
-        run: |
-          python -m abac.apply_priviliges
+          environment: ${{ inputs.environment }}
+          workspace-setup: ${{ inputs.workspace-setup }}
+          command: 'apply_privileges:run'

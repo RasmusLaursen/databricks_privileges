@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from abac.service_requests.parser import Principal, ServiceRequest, ServiceRequestItem, ServiceRequestParser
+from priviliges.service_requests.parser import Principal, ServiceRequest, ServiceRequestItem, ServiceRequestParser
 
 
 class TestServiceRequestParser:
