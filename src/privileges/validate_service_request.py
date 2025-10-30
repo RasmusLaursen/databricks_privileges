@@ -63,14 +63,9 @@ def validate_pr_privileges(base_branch: str = "main", verbose: bool = False) -> 
         # Show detailed information if verbose
         if verbose:
             for request in valid_requests:
-                logger.info(f"Service Request: {request.name}")
-                logger.info(f"   Status: {request.status}")
-                logger.info(f"   Items: {len(request.requests)}")
-                
+                logger.info(f"{request.name} [{request.request_status}] - {len(request.requests)} items")
                 for i, item in enumerate(request.requests, 1):
-                    logger.info(f"   {i}. Principal: {item.principal.type}:{item.principal.id}")
-                    logger.info(f"      Resource: {item.resource}")
-                    logger.info(f"      Privileges: {', '.join(item.privileges)}")
+                    logger.info(f"  {i}. {item.principal.type}:{item.principal.id} -> {item.resource} ({', '.join(item.privileges)})")
         
         return 0
         

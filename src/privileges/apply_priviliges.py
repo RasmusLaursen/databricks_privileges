@@ -173,8 +173,19 @@ def apply_service_request_privileges(service_request, workspace_client, dry_run:
                     privileges=validation_results["valid_privileges"],
                     is_add=is_add_operation,
                 )
+                
+                # Check if any privileges were successfully applied
+                successful_privileges = [priv for priv, success in grant_results.items() if success]
+                failed_privileges = [priv for priv, success in grant_results.items() if not success]
+                
                 action = "applied" if is_add_operation else "removed"
-                logger.info(f"Successfully {action} privileges for {request_item.resource}")
+                if successful_privileges:
+                    logger.info(f"Successfully {action} privileges for {request_item.resource}: {', '.join(successful_privileges)}")
+                
+                if failed_privileges:
+                    action_verb = "apply" if is_add_operation else "remove"
+                    logger.warning(f"Failed to {action_verb} privileges for {request_item.resource}: {', '.join(failed_privileges)}")
+                
                 logger.debug(f"Grant results: {grant_results}")
             except Exception as e:
                 action = "applying" if is_add_operation else "removing"
