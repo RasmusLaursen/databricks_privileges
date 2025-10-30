@@ -16,10 +16,6 @@ on:
         required: true
         type: string
         default: 'deploy'
-      GITHUB_TOKEN: 
-        description: 'GitHub token for API access'
-        required: false
-        type: string
 
 permissions:
   contents: read
