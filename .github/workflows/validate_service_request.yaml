@@ -18,7 +18,6 @@ permissions:
 
 jobs: 
   validate_service_request:
-    needs: test-apply_privileges
     uses: ./.github/workflows/hatch.yaml
     with:
       environment: ${{ inputs.environment }}

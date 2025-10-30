@@ -16,7 +16,7 @@ permissions:
 jobs: 
 
   test-apply_privileges:
-    uses: ./.github/workflows/test.yaml
+    uses: ./.github/workflows/test_lint.yaml
     with:
       environment: 'dev'
     secrets: inherit
