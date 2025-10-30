@@ -35,9 +35,9 @@ def validate_pr_privileges(base_branch: str = "main", verbose: bool = False) -> 
             logger.info("Not in a pull request context - nothing to validate.")
             return 0
         
-        # Get changed files for context
+        # Get changed files for context (using GitHub API if available)
         try:
-            changed_files = github_integration.get_changed_files(base_branch)
+            changed_files = github_integration.get_changed_files(base_branch=base_branch)
             service_request_files = github_integration.filter_service_request_files(changed_files)
             
             logger.info(f"Found {len(service_request_files)} service request file(s) to validate")
@@ -45,7 +45,7 @@ def validate_pr_privileges(base_branch: str = "main", verbose: bool = False) -> 
         except Exception as e:
             logger.warning(f"Could not get changed files information: {e}")
         
-        # Get and validate service requests from PR
+        # Get and validate service requests from PR (using GitHub API if available)
         valid_requests, validation_errors = validate_pr_service_requests(base_branch=base_branch)
         
         if validation_errors:

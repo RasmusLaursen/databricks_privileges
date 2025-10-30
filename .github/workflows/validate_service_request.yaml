@@ -23,4 +23,5 @@ jobs:
       environment: ${{ inputs.environment }}
       workspace-setup: ${{ inputs.workspace-setup }}
       command: 'validate_service_request:run'
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
     secrets: inherit

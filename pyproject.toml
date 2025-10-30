@@ -22,6 +22,7 @@ authors = [
 dependencies = [
     "databricks-sdk>=0.70.0",
     "pyyaml>=6.0.0",
+    "pygithub>=2.1.0",
     "typing-extensions>=4.0.0; python_version<'3.10'",
     "types-pyyaml>=6.0.0"
 ]

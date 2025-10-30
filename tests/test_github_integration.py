@@ -171,7 +171,7 @@ class TestGitHubIntegration:
         with patch.object(GitHubIntegration, 'get_pr_service_requests') as mock_method:
             mock_method.return_value = []
             
-            result = get_pr_service_requests("/tmp/repo", "develop")
+            result = get_pr_service_requests("/tmp/repo", pr_number=123, base_branch="develop")
             
-            mock_method.assert_called_once_with("develop")
+            mock_method.assert_called_once_with(123, "develop")
             assert result == []

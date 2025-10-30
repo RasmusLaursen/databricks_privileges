@@ -27,9 +27,13 @@ def main():
             logger.info("Not in a pull request context, exiting.")
             return 0
         
-        logger.info("Processing service requests from current pull request...")
+        # Show which method will be used
+        if github_integration.github_client and github_integration.pr_number:
+            logger.info(f"Processing service requests from PR #{github_integration.pr_number} using GitHub API v3...")
+        else:
+            logger.info("Processing service requests using git commands (GitHub API not available)...")
         
-        # Method 1: Using the convenience function
+        # Method 1: Using GitHub API (preferred) or git fallback
         service_requests = get_pr_service_requests()
         
         if not service_requests:
