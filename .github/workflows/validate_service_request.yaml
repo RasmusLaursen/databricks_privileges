@@ -22,5 +22,5 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       workspace-setup: ${{ inputs.workspace-setup }}
-      command: 'validate_service_request:run'
+      command: 'validate_service_request:databricks'
     secrets: inherit

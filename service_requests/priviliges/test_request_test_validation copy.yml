@@ -1,0 +1,11 @@
+request-name: Test Request test
+request-type: access
+request-status: active # active, decomissioned
+
+requests: 
+  - principal:
+      type: group
+      id: lakehouse_analyst
+    resource: raw_dev.dev_rahl_lakehouse
+    privileges:
+      - CREATE_FUNCTION

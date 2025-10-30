@@ -144,6 +144,118 @@ class PrivilegeGrantManager:
         
         return parent_results
 
+    def validate_principal_exists(self, principal: str, principal_type: str = "group") -> tuple[bool, str]:
+        """
+        Validate if a principal exists in Databricks.
+        
+        Args:
+            principal: The principal ID to validate
+            principal_type: Type of principal (group, user, service_principal)
+            
+        Returns:
+            tuple: (exists: bool, error_message: str)
+        """
+        try:
+            if principal_type.lower() == "group":
+                try:
+                    # Search for group by display name
+                    groups = list(self.workspace_client.groups.list(filter=f'displayName eq "{principal}"'))
+                    if groups:
+                        return True, ""
+                    return False, f"Group '{principal}' does not exist"
+                except Exception as e:
+                    return False, f"Group '{principal}' does not exist or error checking: {e}"
+                    
+            elif principal_type.lower() == "user":
+                try:
+                    # Search for user by username
+                    users = list(self.workspace_client.users.list(filter=f'userName eq "{principal}"'))
+                    if users:
+                        return True, ""
+                    return False, f"User '{principal}' does not exist"
+                except Exception as e:
+                    return False, f"User '{principal}' does not exist or error checking: {e}"
+                    
+            elif principal_type.lower() in ["service_principal", "serviceprincipal"]:
+                try:
+                    # Search for service principal by display name
+                    sps = list(self.workspace_client.service_principals.list(filter=f'displayName eq "{principal}"'))
+                    if sps:
+                        return True, ""
+                    return False, f"Service principal '{principal}' does not exist"
+                except Exception as e:
+                    return False, f"Service principal '{principal}' does not exist or error checking: {e}"
+            else:
+                return False, f"Unknown principal type '{principal_type}'"
+                
+        except Exception as e:
+            return False, f"Error validating principal '{principal}': {e}"
+
+    def validate_resource_exists(self, resource_name: str, object_type: ObjectType) -> tuple[bool, str]:
+        """
+        Validate if a resource exists in Databricks Unity Catalog.
+        
+        Args:
+            resource_name: Full name of the resource
+            object_type: Type of the resource
+            
+        Returns:
+            tuple: (exists: bool, error_message: str)
+        """
+        try:
+            if object_type == ObjectType.CATALOG:
+                try:
+                    self.workspace_client.catalogs.get(resource_name)
+                    return True, ""
+                except Exception as e:
+                    return False, f"Catalog '{resource_name}' does not exist"
+                    
+            elif object_type == ObjectType.SCHEMA:
+                try:
+                    parts = resource_name.split('.')
+                    if len(parts) != 2:
+                        return False, f"Invalid schema name format '{resource_name}'"
+                    self.workspace_client.schemas.get(resource_name)
+                    return True, ""
+                except Exception as e:
+                    return False, f"Schema '{resource_name}' does not exist"
+                    
+            elif object_type in [ObjectType.TABLE, ObjectType.VIEW]:
+                try:
+                    parts = resource_name.split('.')
+                    if len(parts) != 3:
+                        return False, f"Invalid table name format '{resource_name}'"
+                    self.workspace_client.tables.get(resource_name)
+                    return True, ""
+                except Exception as e:
+                    return False, f"Table/View '{resource_name}' does not exist"
+                    
+            elif object_type == ObjectType.FUNCTION:
+                try:
+                    parts = resource_name.split('.')
+                    if len(parts) != 3:
+                        return False, f"Invalid function name format '{resource_name}'"
+                    self.workspace_client.functions.get(resource_name)
+                    return True, ""
+                except Exception as e:
+                    return False, f"Function '{resource_name}' does not exist"
+                    
+            elif object_type == ObjectType.VOLUME:
+                try:
+                    parts = resource_name.split('.')
+                    if len(parts) != 3:
+                        return False, f"Invalid volume name format '{resource_name}'"
+                    self.workspace_client.volumes.read(resource_name)
+                    return True, ""
+                except Exception as e:
+                    return False, f"Volume '{resource_name}' does not exist"
+            else:
+                # For unknown types, skip validation
+                return True, ""
+                
+        except Exception as e:
+            return False, f"Error validating resource '{resource_name}': {e}"
+
     def apply_multiple_privileges(
         self, resource_name: str, object_type: ObjectType, principal: str, privileges: list[str], is_add: bool = True
     ) -> dict[str, bool]:

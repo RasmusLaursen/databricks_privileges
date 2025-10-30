@@ -247,6 +247,8 @@ run = "python -m privileges.apply_abac"
 run = "python -m privileges.validate_service_request"
 verbose = "python -m privileges.validate_service_request --verbose"
 validate = "python -m privileges.validate_service_request"
+databricks = "python -m privileges.validate_service_request --validate-databricks"
+full = "python -m privileges.validate_service_request --verbose --validate-databricks"
 
 [tool.hatch.envs.validate_all_service_requests]
 
