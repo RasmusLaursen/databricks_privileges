@@ -362,11 +362,13 @@ class GitHubIntegration:
             for request in service_requests:
                 try:
                     # Validate each service request
-                    if self.service_request_parser.validate_service_request(request):
+                    validation_result = self.service_request_parser.validate_service_request(request)
+                    if not validation_result:  # Empty list means valid
                         valid_requests.append(request)
                     else:
-                        error_msg = f"Service request '{request.name}' failed validation"
-                        validation_errors.append(error_msg)
+                        # Add specific validation errors
+                        for error in validation_result:
+                            validation_errors.append(f"Service request '{request.name}': {error}")
                         
                 except Exception as e:
                     error_msg = f"Error validating service request '{request.name}': {e}"
