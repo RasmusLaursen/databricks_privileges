@@ -55,5 +55,6 @@ jobs:
           DATABRICKS_HOST: ${{ fromJson(vars.workspace_setup)[inputs.environment].host }}
           DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
           ENVIRONMENT: ${{ inputs.environment }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: hatch run ${{ inputs.command }}
         shell: bash

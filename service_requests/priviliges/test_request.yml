@@ -15,3 +15,9 @@ requests:
     resource: raw_dev.dev_rahl_lakehouse
     privileges:
       - USE_SCHEMA
+  - principal:
+      type: group
+      id: lakehouse_analyst
+    resource: raw_dev.dev_rahl_review.reviews
+    privileges:
+      - SELECT

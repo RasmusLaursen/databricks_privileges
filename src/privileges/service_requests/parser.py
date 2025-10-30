@@ -63,8 +63,6 @@ class ServiceRequestParser:
             ValueError: If the YAML structure is invalid
             FileNotFoundError: If the file doesn't exist
         """
-        self.logger.info(f"Parsing service request file: {file_path}")
-
         try:
             # Read the YAML file
             yaml_content = yml.read_yaml_file(file_path)
@@ -77,7 +75,6 @@ class ServiceRequestParser:
             # Parse the service request
             service_request = self._parse_yaml_content(yaml_content, file_path)
 
-            self.logger.info(f"Successfully parsed service request: {service_request.name}")
             return service_request
 
         except Exception as e:
@@ -117,7 +114,6 @@ class ServiceRequestParser:
                     self.logger.error(f"Error parsing service request: {e}")
                     continue
 
-            self.logger.info(f"Successfully parsed {len(service_requests)} service requests")
             return service_requests
 
         except Exception as e:

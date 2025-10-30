@@ -43,8 +43,7 @@ class PrivilegeGrantManager:
             ObjectType.TABLE: "table",
             ObjectType.VIEW: "table",  # Views are treated as tables in grants
             ObjectType.FUNCTION: "function",
-            ObjectType.VOLUME: "volume",
-            ObjectType.MODEL: "registered_model",
+            ObjectType.VOLUME: "volume"
         }
         return type_mapping.get(object_type, "table")
 
@@ -60,6 +59,90 @@ class PrivilegeGrantManager:
             bool: True if privilege is valid for the resource type
         """
         return StandardPrivileges.validate_privilege(privilege, object_type)
+
+    def _parse_resource_hierarchy(self, resource_name: str) -> dict[str, str]:
+        """
+        Parse a resource name into its hierarchy components.
+        
+        Args:
+            resource_name: Full resource name (e.g., "catalog.schema.table")
+            
+        Returns:
+            dict: Components with keys 'catalog', 'schema', 'object'
+        """
+        parts = resource_name.split('.')
+        hierarchy = {'catalog': None, 'schema': None, 'object': None}
+        
+        if len(parts) >= 1:
+            hierarchy['catalog'] = parts[0]
+        if len(parts) >= 2:
+            hierarchy['schema'] = f"{parts[0]}.{parts[1]}"
+        if len(parts) >= 3:
+            hierarchy['object'] = resource_name
+            
+        return hierarchy
+
+    def _grant_parent_use_privileges(self, resource_name: str, object_type: ObjectType, principal: str) -> dict[str, bool]:
+        """
+        Automatically grant USE privileges on parent catalog and schema.
+        
+        Args:
+            resource_name: Full name of the resource
+            object_type: Type of the resource
+            principal: The principal to grant USE privileges to
+            
+        Returns:
+            dict: Results of parent privilege operations
+        """
+        parent_results = {}
+        
+        # Only apply parent privileges for table, view, function, and volume objects
+        if object_type not in [ObjectType.TABLE, ObjectType.VIEW, ObjectType.FUNCTION, ObjectType.VOLUME]:
+            return parent_results
+        
+        try:
+            hierarchy = self._parse_resource_hierarchy(resource_name)
+            
+            # Grant USE on catalog
+            if hierarchy['catalog']:
+                try:
+                    catalog_change = PermissionsChange(
+                        principal=principal,
+                        add=[Privilege.USE_CATALOG]
+                    )
+                    self.workspace_client.grants.update(
+                        securable_type="catalog",
+                        full_name=hierarchy['catalog'],
+                        changes=[catalog_change]
+                    )
+                    parent_results[f"USE_CATALOG on {hierarchy['catalog']}"] = True
+                    self.logger.debug(f"Granted USE_CATALOG on catalog {hierarchy['catalog']} to {principal}")
+                except Exception as e:
+                    parent_results[f"USE_CATALOG on {hierarchy['catalog']}"] = False
+                    self.logger.warning(f"Could not grant USE_CATALOG on catalog {hierarchy['catalog']}: {e}")
+            
+            # Grant USE on schema
+            if hierarchy['schema']:
+                try:
+                    schema_change = PermissionsChange(
+                        principal=principal,
+                        add=[Privilege.USE_SCHEMA]
+                    )
+                    self.workspace_client.grants.update(
+                        securable_type="schema",
+                        full_name=hierarchy['schema'],
+                        changes=[schema_change]
+                    )
+                    parent_results[f"USE_SCHEMA on {hierarchy['schema']}"] = True
+                    self.logger.debug(f"Granted USE_SCHEMA on schema {hierarchy['schema']} to {principal}")
+                except Exception as e:
+                    parent_results[f"USE_SCHEMA on {hierarchy['schema']}"] = False
+                    self.logger.warning(f"Could not grant USE_SCHEMA on schema {hierarchy['schema']}: {e}")
+                    
+        except Exception as e:
+            self.logger.error(f"Error granting parent privileges for {resource_name}: {e}")
+        
+        return parent_results
 
     def apply_multiple_privileges(
         self, resource_name: str, object_type: ObjectType, principal: str, privileges: list[str], is_add: bool = True
@@ -79,6 +162,11 @@ class PrivilegeGrantManager:
         """
         results = {}
         valid_privileges = []
+
+        # Grant parent USE privileges first (only when adding privileges)
+        if is_add:
+            parent_results = self._grant_parent_use_privileges(resource_name, object_type, principal)
+            results.update(parent_results)
 
         # Validate all privileges first
         for privilege in privileges:

@@ -22,6 +22,7 @@ authors = [
 dependencies = [
     "databricks-sdk>=0.70.0",
     "pyyaml>=6.0.0",
+    "pygithub>=2.1.0",
     "typing-extensions>=4.0.0; python_version<'3.10'",
     "types-pyyaml>=6.0.0"
 ]
@@ -49,6 +50,8 @@ Source = "https://github.com/username/privileges"
 [project.scripts]
 apply_priviliges = "privileges.apply_priviliges:main"
 apply_abac = "privileges.apply_abac:main"
+validate_service_request = "privileges.validate_service_request:main"
+validate_all_service_requests = "privileges.validate_all_service_requests:main"
 
 ###########################
 # tool configureation
@@ -237,3 +240,18 @@ run = "python -m privileges.apply_priviliges"
 
 [tool.hatch.envs.apply_abac.scripts]
 run = "python -m privileges.apply_abac"
+
+[tool.hatch.envs.validate_service_request]
+
+[tool.hatch.envs.validate_service_request.scripts]
+run = "python -m privileges.validate_service_request"
+verbose = "python -m privileges.validate_service_request --verbose"
+validate = "python -m privileges.validate_service_request"
+
+[tool.hatch.envs.validate_all_service_requests]
+
+[tool.hatch.envs.validate_all_service_requests.scripts]
+run = "python -m privileges.validate_all_service_requests"
+verbose = "python -m privileges.validate_all_service_requests --verbose"
+validate = "python -m privileges.validate_all_service_requests"
+validate-path = "python -m privileges.validate_all_service_requests --path"

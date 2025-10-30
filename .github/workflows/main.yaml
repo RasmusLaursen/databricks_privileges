@@ -14,7 +14,22 @@ permissions:
   id-token: write
 
 jobs: 
+
+  test-apply_privileges:
+    uses: ./.github/workflows/test_lint.yaml
+    with:
+      environment: 'dev'
+    secrets: inherit
+
+  validate_service_request:
+    uses: ./.github/workflows/validate_service_request.yaml
+    with:
+      environment: 'dev'
+    secrets: inherit
+
   apply_privileges:
+    needs: [validate_service_request, test-apply_privileges]
+    if: github.ref == 'refs/heads/main'
     uses: ./.github/workflows/apply_privileges.yaml
     with:
       environment: 'dev'
