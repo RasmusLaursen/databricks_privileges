@@ -66,15 +66,43 @@ class GitHubIntegration:
                 
             except subprocess.CalledProcessError as e:
                 logger.debug(f"Failed to get changed files using {branch_ref}: {e}")
+                logger.debug(f"Command stderr: {e.stderr}")
+                last_error = e
                 continue
         
-        # If all attempts failed, raise the last error
-        logger.error(f"Failed to get changed files using any branch reference: {branch_refs}")
-        raise subprocess.CalledProcessError(
-            1, 
-            f"git diff --name-only", 
-            f"Could not find any valid branch reference from: {', '.join(branch_refs)}"
-        )
+        # If all attempts failed, try a fallback approach
+        logger.warning(f"Failed to get changed files using any branch reference: {branch_refs}")
+        logger.info("Trying fallback: get all tracked files")
+        
+        try:
+            # Fallback: get all tracked files in the repository
+            result = subprocess.run(
+                ["git", "ls-files"],
+                cwd=self.repo_root,
+                capture_output=True,
+                text=True,
+                check=True
+            )
+            all_files = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+            logger.info(f"Fallback successful: found {len(all_files)} tracked files")
+            return all_files
+            
+        except subprocess.CalledProcessError as fallback_error:
+            logger.error("Fallback also failed")
+            logger.error(f"Fallback error: {fallback_error}")
+            
+            # Raise the original error with more details
+            if 'last_error' in locals():
+                logger.error(f"Original error command: {last_error.cmd}")
+                logger.error(f"Original error stderr: {last_error.stderr}")
+                logger.error(f"Original error stdout: {last_error.stdout}")
+                raise last_error
+            else:
+                raise subprocess.CalledProcessError(
+                    1, 
+                    f"git diff --name-only", 
+                    f"Could not find any valid branch reference from: {', '.join(branch_refs)}"
+                )
 
     def get_changed_files_from_env(self) -> List[str]:
         """
